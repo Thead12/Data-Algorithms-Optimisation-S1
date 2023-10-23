@@ -62,7 +62,28 @@ public:
             conquerable = true;
         }
     }
+    //Overload of constructor to fill matrix with repeating number
+    matrix(int x, int y, double repeating) {
+        rows = x;
+        columns = y;
+        //Array of pointers to store the matrix
+        ptr = new double[rows * columns];
+        int index = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                *(ptr + index) = repeating;
+                index++;
+            }
+        }   
 
+        //checking to see if the matrix is size N = 2^m
+        if (rows != columns && isdigit(log2(rows))) {
+            conquerable = false;
+        }
+        else {
+            conquerable = true;
+        }
+    }
     double get(int i, int j) {
         if (i < rows && j < columns) {
             return ptr[(i * columns) + j];
@@ -144,20 +165,21 @@ public:
                 finalMatrix.set(0, 0, get(0, 0) * b(0, 0));
             }
             else {
-                matrix c00(rows, columns);
-                matrix c01(rows, columns);
-                matrix c10(rows, columns);
-                matrix c11(rows, columns);
 
-                matrix a00(rows, columns);
-                matrix a01(rows, columns);
-                matrix a10(rows, columns);
-                matrix a11(rows, columns);
+                matrix c00(index, index);
+                matrix c01(index, index);
+                matrix c10(index, index);
+                matrix c11(index, index);
 
-                matrix b00(rows, columns);
-                matrix b01(rows, columns);
-                matrix b10(rows, columns);
-                matrix b11(rows, columns);
+                matrix a00(index, index);
+                matrix a01(index, index);
+                matrix a10(index, index);
+                matrix a11(index, index);
+
+                matrix b00(index, index);
+                matrix b01(index, index);
+                matrix b10(index, index);
+                matrix b11(index, index);
 
                 //Filling submatrices
                 for (int i = 0; i < index; i++) {
@@ -243,22 +265,30 @@ int main()
 {
 
     vector<vector<double> > arr1 = {
-        {1, 1, 1, 1},
-        {1, 1, 1, 1},
-        {1, 1, 1, 1},
-        {1, 1, 1, 1}
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1}
     };
 
     vector<vector<double> > arr2 = {
-        {1, 1, 1, 1},
-        {1, 1, 1, 1},
-        {1, 1, 1, 1},
-        {1, 1, 1, 1}
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1}
     };
 
-    matrix matrix1(4, 4, arr1);
+    matrix matrix1(8, 8, 5.7);
 
-    matrix matrix2(4, 4, arr2);
+    matrix matrix2(8, 8, 6.989);
 
     matrix matrix3 = matrix2.conquer(matrix1);
 
