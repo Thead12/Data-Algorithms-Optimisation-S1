@@ -8,11 +8,11 @@
 using namespace std;
 
 //Matrix class
-class matrix {
+class Matrix {
 
 public: //public variables
     //Constructor
-    matrix(int x, int y, vector<vector<double> > grid) {
+    Matrix(int x, int y, vector<vector<double> > grid) {
         rows = x;
         columns = y;
 
@@ -35,7 +35,7 @@ public: //public variables
 #endif
     }
 
-    matrix(int x, int y) {  //overload of constructor to create empty matrix
+    Matrix(int x, int y) {  //overload of constructor to create empty matrix
         rows = x;
         columns = y;
 
@@ -58,7 +58,7 @@ public: //public variables
 #endif
     }
 
-    matrix(int x, int y, double repeating) { //Overload of constructor to fill matrix with repeating number
+    Matrix(int x, int y, double repeating) { //Overload of constructor to fill matrix with repeating number
         rows = x;
         columns = y;
         //Array of pointers to store the matrix
@@ -128,7 +128,7 @@ public: //public variables
         return c;
     }
 
-    matrix simpleproduct(matrix b) {
+    matrix SimpleProduct(matrix b) {
         assert(("Dimensions of matrices are not compatible", columns == b.getrows()));
         matrix  c(rows, b.getcolumns());
         for (int i = 0; i < rows; i++) {
@@ -142,7 +142,7 @@ public: //public variables
         return c;
     }
 
-    matrix conquer(matrix b) {
+    matrix Conquer(matrix b) {
         matrix finalMatrix(rows, columns);
         assert(("Matrices are not of the form 2^m", conquerable == true && rows == b.getcolumns()));
         int index = rows / 2;
@@ -208,7 +208,7 @@ public: //public variables
         return finalMatrix;
     }
 
-    void print() {
+    void Print() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 cout << get(i, j) << ", ";
