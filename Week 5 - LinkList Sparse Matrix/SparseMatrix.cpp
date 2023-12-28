@@ -115,7 +115,7 @@ public:
 
     void InsertNode(int index, double col, double data)
     {
-        assert(("Index not valid.", 0 <= index && index < length));
+        //assert(("Index not valid.", 0 <= index && index < length));
         //Create new Node
         Node* newNode = new Node(col, data);
 
@@ -295,19 +295,50 @@ public:
         return 0; // If i,j coords do not match in sparse matrix then it must be zero
     }
 
-    //Set function needs completing -------- !!!!!!!
     void set(int i, int  j, double data)
     {
         assert(("Row index not valid.", 0 <= i && i < rows));
         assert(("Column index not valid.", 0 <= j && j < cols));
         assert(("Cannot set 0 value, use .Remove() instead.", data != 0));
 
-        for (int n = 0; n < rowsArray[i].size(); n++) { //Traversing linked list to find correct place to insert
-            int columnIndex = rowsArray[i].get(n)[0]; //Gets column data from node
+        int currentValue = get(i, j);
 
-            if (j == columnIndex) {
-                rowsArray[i].set(n, data);
-                return;
+        //cout << currentValue << endl;
+
+        if (currentValue == 0 && rowsArray[i].size() == 0) { //Will insert a new node if current value is 0 and there is no node
+            rowsArray[i].InsertTail(j, data);
+        }
+        else if (currentValue == 0) {
+            for (int n = 0; n < rowsArray[i].size(); n++) { //Traversing linked list to find correct place to set
+                int columnIndex = rowsArray[i].get(n)[0]; //Gets column data from node
+
+                if (j < columnIndex) {
+                    if (n == 0) {
+                        rowsArray[i].InsertHead(j, data);
+                    }
+                    else {
+                        rowsArray[i].InsertNode(n, j, data); //Replaces current data in node with data
+                    }
+                    return;
+                }
+                else if (j > columnIndex) {
+                    if (n == rowsArray[i].size()) {
+                        rowsArray[i].InsertTail(j, data);
+                    }
+                    else {
+                        rowsArray[i].InsertNode(n, j, data); //Replaces current data in node with data
+                    }
+                    return;
+                }
+            }
+        }
+        else { //Non-zero current value is set from currentValue to data instead
+            for (int n = 0; n < rowsArray[i].size(); n++) { //Traversing linked list to find correct place to set
+                int columnIndex = rowsArray[i].get(n)[0]; //Gets column data from node
+                if (j == columnIndex) {
+                    rowsArray[i].set(n, data); //Replaces current data in node with data
+                    return;
+                }
             }
         }
     }
@@ -342,51 +373,57 @@ public:
 
 int main()
 {
-   
-    /*LinkedList list;
+    /*
+    LinkedList list;
 
 
     list.InsertTail(0, 1);
     list.InsertTail(1, 2);
     list.InsertTail(2, 3);
-    list.InsertHead(3, 4);
+    list.InsertTail(3, 4);
+
+    list.InsertNode(1, -1, 0);
 
     list.PrintList();
-    cout << endl*/
+    cout << endl;
+    */
 
     
 
     vector<vector<double>> denseVector = {
-        {0, 0, 0, 1},
+        {0, 1, 0, 0},
         {0, 0, 0, 0},
         {0, 0, 0, 0},
         {0, 0, 0, 0},
         {0, 0, 0, 0}
     };
 
+    
     Matrix denseMatrix = Matrix(5, 4, denseVector);
 
-    SparseMatrix sparse = SparseMatrix(5, 4, denseVector);    
+    SparseMatrix sparse = SparseMatrix(5, 4, denseVector);   
 
-    //sparse.PrintSparse();
-    //cout << endl;
+    sparse.set(0, 0, 0.01);
 
-    sparse.set(0, 3, 2);
+    sparse.set(0, 3, 0.3);
+
+    sparse.set(4, 1, 4.1);
+
+    sparse.set(4, 3, 4.3);
+
+    sparse.set(4, 0, 4.0);
 
     sparse.PrintSparse();
-    cout << endl;    
+    cout << endl;
 
-    //sparse.PrintSparse();
-    //cout << endl;
-
-
-
-
-    /*for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i++) {
      for (int j = 0; j < 4; j++) {
          cout << sparse.get(i, j) << ", ";
      }
      cout << endl;
-    }*/
+    }
+    
+
+    
 }
 
