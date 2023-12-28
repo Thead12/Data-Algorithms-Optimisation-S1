@@ -113,9 +113,9 @@ public:
         }
     }
 
-    void InsertNode(int index, double col, double data)
+    //Inserts new node behind given index
+    void InsertBehind(int index, double col, double data)
     {
-        //assert(("Index not valid.", 0 <= index && index < length));
         //Create new Node
         Node* newNode = new Node(col, data);
 
@@ -125,11 +125,12 @@ public:
 
             length++;
             return;
-        }
-        else {
+        } else if (index == 0) { //Edge case where insertion point is at the start of the LinkedList
+            InsertHead(col, data);
+        } else {
             //Traverse till index
             Node* temp = head;
-            for (int i = 0; i < index; i++) {
+            for (int i = 0; i < index - 1; i++) {
                 temp = temp->next;
             }
 
@@ -139,6 +140,32 @@ public:
 
             length++;
             return;
+        }
+    }
+
+    //Inserts new node infront of given index
+    void InsertForward(int index, double col, double data) {
+        //Creat new node
+        Node* newNode = new Node(col, data);
+
+        //If list if empty
+        if (head == NULL) {
+            head = newNode;
+
+            length++;
+        } else if (index == length) { //Edge case where the insertion point is at the end of the LinkedList
+            InsertTail(col, data);
+        } else {
+            //Traverse till index
+            Node* temp = head;
+            for (int i = 0; i < index; i++) {
+                temp = temp->next;
+            }
+            //Insert at index
+            newNode->next = temp->next;
+            temp->next = newNode;
+
+            length++;
         }
     }
 
@@ -291,71 +318,62 @@ public:
                 }
             }
         }
-        
+
         return 0; // If i,j coords do not match in sparse matrix then it must be zero
     }
 
-    void set(int i, int  j, double data)
-    {
-        assert(("Row index not valid.", 0 <= i && i < rows));
-        assert(("Column index not valid.", 0 <= j && j < cols));
+    //This function can both replace an existing node and create a new one depending on the current value in the matrix
+    void set(int row, int col, double data) {
+        assert(("Row index not valid.", 0 <= row && row < rows));
+        assert(("Column index not valid.", 0 <= col && col < cols));
         assert(("Cannot set 0 value, use .Remove() instead.", data != 0));
 
-        int currentValue = get(i, j);
+        int currentValue = get(row, col);
 
-        //cout << currentValue << endl;
-
-        if (currentValue == 0 && rowsArray[i].size() == 0) { //Will insert a new node if current value is 0 and there is no node
-            rowsArray[i].InsertTail(j, data);
+        if (currentValue == 0 && rowsArray[row].size() == 0) { // Insert a new node if the current value is 0 and there is no node
+            rowsArray[row].InsertTail(col, data);
         }
-        else if (currentValue == 0) {
-            for (int n = 0; n < rowsArray[i].size(); n++) { //Traversing linked list to find correct place to set
-                int columnIndex = rowsArray[i].get(n)[0]; //Gets column data from node
-
-                if (j < columnIndex) {
-                    if (n == 0) {
-                        rowsArray[i].InsertHead(j, data);
-                    }
-                    else {
-                        rowsArray[i].InsertNode(n, j, data); //Replaces current data in node with data
-                    }
-                    return;
-                }
-                else if (j > columnIndex) {
-                    if (n == rowsArray[i].size()) {
-                        rowsArray[i].InsertTail(j, data);
-                    }
-                    else {
-                        rowsArray[i].InsertNode(n, j, data); //Replaces current data in node with data
-                    }
+        else if (currentValue == 0) { // Insert the new node at the appropriate position
+            int columnIndex = 0;
+            for (int n = 0; n < rowsArray[row].size(); ++n) {
+                columnIndex = rowsArray[row].get(n)[0];
+                if (col < columnIndex) {
+                    rowsArray[row].InsertBehind(n, col, data); // Insert before the current node
                     return;
                 }
             }
+            rowsArray[row].InsertTail(col, data); // Insert at the end if col is greater than all existing columns
         }
-        else { //Non-zero current value is set from currentValue to data instead
-            for (int n = 0; n < rowsArray[i].size(); n++) { //Traversing linked list to find correct place to set
-                int columnIndex = rowsArray[i].get(n)[0]; //Gets column data from node
-                if (j == columnIndex) {
-                    rowsArray[i].set(n, data); //Replaces current data in node with data
+        else { // Non-zero current value, update or set the value
+            for (int n = 0; n < rowsArray[row].size(); ++n) {
+                int columnIndex = rowsArray[row].get(n)[0];
+                if (col == columnIndex) {
+                    rowsArray[row].set(n, data); // Update the existing node
+                    return;
+                }
+                else if (col < columnIndex) {
+                    rowsArray[row].InsertBehind(n, col, data); // Insert before the current node
                     return;
                 }
             }
+            rowsArray[row].InsertTail(col, data); // Insert at the end if col is greater than all existing columns
         }
     }
 
-    //Used to set values of the matrix back to zero
-    void Remove(int i, int j) 
-    {
-        assert(("Row index not valid.", 0 <= i && i < rows));
-        assert(("Column index not valid.", 0 <= j && j < cols));
 
-        for (int n = 0; n < rowsArray[i].size(); n++) { //Traversing linked list to find correct place to delete
-            int columnIndex = rowsArray[i].get(n)[0]; //Gets column data from node
-            if (j == columnIndex) {
-                rowsArray[i].DeleteNode(n); //Deleting node effectively turns value to zero
+    //Used to set values of the matrix back to zero
+    void Remove(int col, int row)
+    {
+        assert(("Row index not valid.", 0 <= row && row < rows));
+        assert(("Column index not valid.", 0 <= col && col < cols));
+
+        for (int n = 0; n < rowsArray[col].size(); n++) { //Traversing linked list to find correct place to delete
+            int columnIndex = rowsArray[col].get(n)[0]; //Gets column data from node
+            if (row == columnIndex) {
+                rowsArray[col].DeleteNode(n); //Deleting node effectively turns value to zero
+                return;
             }
         }
-        return;
     }
 
     void PrintSparse()
@@ -373,6 +391,7 @@ public:
 
 int main()
 {
+    
     /*
     LinkedList list;
 
@@ -382,48 +401,39 @@ int main()
     list.InsertTail(2, 3);
     list.InsertTail(3, 4);
 
-    list.InsertNode(1, -1, 0);
+    list.InsertBehind(3, -1, 0);
 
     list.PrintList();
     cout << endl;
     */
+    
+    
 
     
 
     vector<vector<double>> denseVector = {
-        {0, 1, 0, 0},
         {0, 0, 0, 0},
+        {100, 0, 0, 0},
         {0, 0, 0, 0},
         {0, 0, 0, 0},
         {0, 0, 0, 0}
     };
 
-    
     Matrix denseMatrix = Matrix(5, 4, denseVector);
 
-    SparseMatrix sparse = SparseMatrix(5, 4, denseVector);   
+    SparseMatrix sparse = SparseMatrix(5, 4, denseVector);
 
-    sparse.set(0, 0, 0.01);
-
-    sparse.set(0, 3, 0.3);
-
-    sparse.set(4, 1, 4.1);
-
-    sparse.set(4, 3, 4.3);
-
-    sparse.set(4, 0, 4.0);
+    sparse.set(1, 3, 4);
+    sparse.set(1, 2, 5);
 
     sparse.PrintSparse();
     cout << endl;
 
     for (int i = 0; i < 5; i++) {
-     for (int j = 0; j < 4; j++) {
-         cout << sparse.get(i, j) << ", ";
-     }
-     cout << endl;
+        for (int j = 0; j < 4; j++) {
+            cout << sparse.get(i, j) << ", ";
+        }
+        cout << endl;
     }
-    
 
-    
 }
-
