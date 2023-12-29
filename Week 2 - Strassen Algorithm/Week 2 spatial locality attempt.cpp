@@ -228,6 +228,114 @@ vector<vector<int> > DivideAndStrassen(
                 }
             }
         }
+        
+
+        /*//Computing the new matrices
+
+        //M1 = (A00 + A11)(B00 + B11)
+        M1 = DivideAndStrassen(AddStrassen(A00, A11, index), AddStrassen(B00, B11, index), index);
+        //M2 = (A10 + A11)B00
+        //Filling submatrices
+        for (int i = 0; i < index; i++) {
+            for (int j = 0; j < index; j++) {
+
+                A00[i][j] = matrixA[i][j];
+                A01[i][j] = matrixA[i][j + index];
+                A10[i][j] = matrixA[i + index][j];
+                A11[i][j] = matrixA[i + index][i + index];
+
+                B00[i][j] = matrixB[i][j];
+                B01[i][j] = matrixB[i][j + index];
+                B10[i][j] = matrixB[i + index][j];
+                B11[i][j] = matrixB[i + index][i + index];
+            }
+        }
+        M2 = DivideAndStrassen(AddStrassen(A10, A11, index), B00, index);
+        //M3 = A00(B01 - B11)
+        //Filling submatrices
+        for (int i = 0; i < index; i++) {
+            for (int j = 0; j < index; j++) {
+
+                A00[i][j] = matrixA[i][j];
+                A01[i][j] = matrixA[i][j + index];
+                A10[i][j] = matrixA[i + index][j];
+                A11[i][j] = matrixA[i + index][i + index];
+
+                B00[i][j] = matrixB[i][j];
+                B01[i][j] = matrixB[i][j + index];
+                B10[i][j] = matrixB[i + index][j];
+                B11[i][j] = matrixB[i + index][i + index];
+            }
+        }
+        M3 = DivideAndStrassen(A00, SubStrassen(A10, A11, index), index);
+        //M4 = A11(B10 - B00)
+        //Filling submatrices
+        for (int i = 0; i < index; i++) {
+            for (int j = 0; j < index; j++) {
+
+                A00[i][j] = matrixA[i][j];
+                A01[i][j] = matrixA[i][j + index];
+                A10[i][j] = matrixA[i + index][j];
+                A11[i][j] = matrixA[i + index][i + index];
+
+                B00[i][j] = matrixB[i][j];
+                B01[i][j] = matrixB[i][j + index];
+                B10[i][j] = matrixB[i + index][j];
+                B11[i][j] = matrixB[i + index][i + index];
+            }
+        }
+        M4 = DivideAndStrassen(A11, SubStrassen(B10, B00, index), index);
+        //M5 = (A00 + A01)B11
+        //Filling submatrices
+        for (int i = 0; i < index; i++) {
+            for (int j = 0; j < index; j++) {
+
+                A00[i][j] = matrixA[i][j];
+                A01[i][j] = matrixA[i][j + index];
+                A10[i][j] = matrixA[i + index][j];
+                A11[i][j] = matrixA[i + index][i + index];
+
+                B00[i][j] = matrixB[i][j];
+                B01[i][j] = matrixB[i][j + index];
+                B10[i][j] = matrixB[i + index][j];
+                B11[i][j] = matrixB[i + index][i + index];
+            }
+        }
+        M5 = DivideAndStrassen(AddStrassen(A00, A01, index), B11, index);
+        //M6 = (A10 - A00)(B00 + B01)
+        //Filling submatrices
+        for (int i = 0; i < index; i++) {
+            for (int j = 0; j < index; j++) {
+
+                A00[i][j] = matrixA[i][j];
+                A01[i][j] = matrixA[i][j + index];
+                A10[i][j] = matrixA[i + index][j];
+                A11[i][j] = matrixA[i + index][i + index];
+
+                B00[i][j] = matrixB[i][j];
+                B01[i][j] = matrixB[i][j + index];
+                B10[i][j] = matrixB[i + index][j];
+                B11[i][j] = matrixB[i + index][i + index];
+            }
+        }
+        M6 = DivideAndStrassen(SubStrassen(A10, A00, index), AddStrassen(B00, B01, index), index);
+        //M7 = (A01 - A11)(B10 + B11)
+        //Filling submatrices
+        for (int i = 0; i < index; i++) {
+            for (int j = 0; j < index; j++) {
+
+                A00[i][j] = matrixA[i][j];
+                A01[i][j] = matrixA[i][j + index];
+                A10[i][j] = matrixA[i + index][j];
+                A11[i][j] = matrixA[i + index][i + index];
+
+                B00[i][j] = matrixB[i][j];
+                B01[i][j] = matrixB[i][j + index];
+                B10[i][j] = matrixB[i + index][j];
+                B11[i][j] = matrixB[i + index][i + index];
+            }
+        }
+        M7 = DivideAndStrassen(SubStrassen(A01, A11, index), AddStrassen(B10, B11, index), index);*/
 
         //Returning values into finalMatrix
         for (int i = 0; i < index; i++) {
