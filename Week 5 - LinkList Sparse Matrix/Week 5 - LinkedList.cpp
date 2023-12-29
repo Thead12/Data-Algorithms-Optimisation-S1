@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include <cassert>
-#include <tuple>
+#include <vector>
+
+//#include "matrix.h"
 
 //Uncomment to remove debug
 //#define NDEBUG
@@ -11,7 +13,7 @@
 using namespace std;
 
 //Node class
-class Node 
+class Node
 {
 public: //public methods
     double value; //Value in node
@@ -19,7 +21,7 @@ public: //public methods
     //Constructors
     Node()
     {
-        value = 0;
+        value = 0.0;
         next = NULL;
     }
 
@@ -34,24 +36,18 @@ public: //public methods
 class LinkedList {
 private:
     Node* head; //Pointer to head of list
+    int length; //Stores length of list
 public:
 
-    //Constructorss
+    //Constructors
     LinkedList()
     {
         //Node();
         head = NULL;
-        length = -1;
+        length = 0;
     }
 
-    //Overloading [] operator to access elements in array style
-    double operator[](int index)
-    {
-        return get(index);
-    }
-
-    int length; //Stores length of list
-
+    //Constructor to set the first value in LinkedList
     double get(int index)
     {
         assert(("Index not valid.", 0 <= index && index <= length));
@@ -64,7 +60,7 @@ public:
 
     void set(int index, double data)
     {
-        assert(("Index not valid.", 0 <= index && index <= length));
+        assert(("Index not valid.", 0 <= index && index <= length - 1));
         Node* temp = head;
         for (int i = 0; i < index; i++) {
             temp = temp->next;
@@ -74,7 +70,7 @@ public:
 
     void DeleteNode(int index)
     {
-        assert(("Index not valid.", 0 <= index && index <= length));
+        assert(("Index not valid.", 0 <= index && index <= length - 1));
         //Delete at head
         if (index == 0) {
 
@@ -91,9 +87,9 @@ public:
             //Traverse till index
             Node* temp1 = head;
             Node* temp2 = head->next;
-            
+
             //Traverse till indexx
-            for (int i = 0; i < index-1; i++) {
+            for (int i = 0; i < index - 1; i++) {
                 temp1 = temp2;
                 temp2 = temp2->next;
             }
@@ -107,9 +103,9 @@ public:
         }
     }
 
-    void InsertNode(int index, double data)
+    void InsertNode(int index, double col, double data)
     {
-        assert(("Index not valid.", 0 <= index && index <= length));
+        assert(("Index not valid.", 0 <= index && index <= length - 1));
         //Create new Node
         Node* newNode = new Node(data);
 
@@ -136,6 +132,66 @@ public:
         }
     }
 
+    //Inserts new node behind given index
+    void InsertBehind(int index, double data)
+    {
+        //Create new Node
+        Node* newNode = new Node(data);
+
+        //If list is empty
+        if (head == NULL) {
+            head = newNode;
+
+            length++;
+            return;
+        }
+        else if (index == 0) { //Edge case where insertion point is at the start of the LinkedList
+            InsertHead(data);
+        }
+        else {
+            //Traverse till index
+            Node* temp = head;
+            for (int i = 0; i < index - 1; i++) {
+                temp = temp->next;
+            }
+
+            //Insert at index
+            newNode->next = temp->next;
+            temp->next = newNode;
+
+            length++;
+            return;
+        }
+    }
+
+    //Inserts new node infront of given index
+    void InsertForward(int index, double data) {
+        //Creat new node
+        Node* newNode = new Node(data);
+
+        //If list if empty
+        if (head == NULL) {
+            head = newNode;
+
+            length++;
+        }
+        else if (index == length) { //Edge case where the insertion point is at the end of the LinkedList
+            InsertTail(data);
+        }
+        else {
+            //Traverse till index
+            Node* temp = head;
+            for (int i = 0; i < index; i++) {
+                temp = temp->next;
+            }
+            //Insert at index
+            newNode->next = temp->next;
+            temp->next = newNode;
+
+            length++;
+        }
+    }
+
     void InsertHead(double data)
     {
         //Create new node
@@ -154,7 +210,7 @@ public:
 
         //Make new node into head
         head = newNode;
-        
+
         length++;
         return;
     }
@@ -186,7 +242,7 @@ public:
             length++;
             return;
         }
-        
+
     }
 
     void PrintList()
@@ -200,52 +256,29 @@ public:
         }
 
         while (temp != NULL) {
-            cout << temp->value << " ";
+            cout << temp->value << endl;
             temp = temp->next;
         }
     }
-
 };
-
-/*
-class SparseMatrix
-{
-private:
-    int rows;
-    int cols;
-
-    LinkedList rowArray[];
-public:
-
-    SparseMatrix(int initRows, int initCols)
-    {
-        rows = initRows;
-        cols = initCols;
-
-        rowArray = {}
-    }
-
-};
-*/
-
-
 
 int main()
 {
+    
     LinkedList list;
 
 
-    list.InsertTail(1.0);
-    list.InsertTail(2.0);
-    list.InsertTail(3.0);
-    list.InsertHead(0.0);
+    list.InsertTail(1);
+    list.InsertTail(2);
+    list.InsertTail(3);
+    list.InsertHead(4);
+
+    list.InsertBehind(0, 3.5);
 
     list.PrintList();
     cout << endl;
 
-    cout << list[2] << endl;
-
-
     list.PrintList();
     cout << endl;
+
 }
