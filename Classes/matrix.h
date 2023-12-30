@@ -5,51 +5,32 @@
 
 //Uncomment to remove debug
 //#define NDEBUG
-using namespace std;
 
-//Matrix class
+using std::vector;
+using std::cout;
+using std::endl;
+
+//Matrix class using 1d row major order
 class Matrix {
 
-public: //public variables
-    //Constructor
-    Matrix(int x, int y, vector<vector<double> > grid) {
-        rows = x;
-        columns = y;
+public:
 
-        ptr = new double[rows * columns];   //Array of pointers to store the matrix
-        assert(("Vector and Matrix size to not match.", grid.size() == rows && grid[0].size() == columns));
-        int index = 0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                *(ptr + index) = grid[i][j];
-                index++;
-            }
-        }
-#ifndef NDEBUG
-        if (rows != columns && isdigit(log2(rows))) {
-            conquerable = false;
-        }
-        else {
-            conquerable = true;
-        }
-#endif
-    }
+    //Constructor to create empty Matrix
+    Matrix(int initRows, int initCols) {
+        rows = initRows; cols = initCols;
 
-    Matrix(int x, int y) {  //overload of constructor to create empty matrix
-        rows = x;
-        columns = y;
-
-        ptr = new double[rows * columns];   //Array of pointers to store the matrix
+        ptr = new double[rows * cols]; //Array of pointers to store the Matrix
 
         int index = 0;
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
+            for (int j = 0; j < cols; j++) {
                 *(ptr + index) = 0;
                 index++;
             }
         }
+        //checking to see if the Matrix is size N = 2^m
 #ifndef NDEBUG
-        if (rows != columns && isdigit(log2(rows))) {
+        if (rows != cols && isdigit(log2(rows))) {
             conquerable = false;
         }
         else {
@@ -58,21 +39,45 @@ public: //public variables
 #endif
     }
 
-    Matrix(int x, int y, double repeating) { //Overload of constructor to fill matrix with repeating number
-        rows = x;
-        columns = y;
-        //Array of pointers to store the matrix
-        ptr = new double[rows * columns];
+    // Overload of constructor to make matrix from given vector
+    Matrix(int initRows, int initCols, vector<vector<double> > grid) {
+        rows = initRows; cols = initCols;
+
+        ptr = new double[rows * cols];   //Array of pointers to store the Matrix
+        assert(("Vector and Matrix size to not match.", grid.size() == rows && grid[0].size() == cols));
         int index = 0;
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
+            for (int j = 0; j < cols; j++) {
+                *(ptr + index) = grid[i][j];
+                index++;
+            }
+        }
+        //checking to see if the Matrix is size N = 2^m
+#ifndef NDEBUG
+        if (rows != cols && isdigit(log2(rows))) {
+            conquerable = false;
+        }
+        else {
+            conquerable = true;
+        }
+#endif
+    }
+
+    //Overload of constructor to fill Matrix with repeating number
+    Matrix(int initRows, int initCols, double repeating) {
+        rows = initRows; cols = initCols;
+        //Array of pointers to store the Matrix
+        ptr = new double[rows * cols];
+        int index = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 *(ptr + index) = repeating;
                 index++;
             }
         }
-
+        //checking to see if the Matrix is size N = 2^m
 #ifndef NDEBUG
-        if (rows != columns && isdigit(log2(rows))) { //checking to see if the matrix is size N = 2^m
+        if (rows != cols && isdigit(log2(rows))) {
             conquerable = false;
         }
         else {
@@ -81,46 +86,48 @@ public: //public variables
 #endif
     }
 
-    int getcolumns() {
-        return columns;
+    int getCols() {
+        return cols;
     }
 
-    int getrows() {
+    int getRows() {
         return rows;
     }
 
     double get(int i, int j) {
-        assert(("Index out of range", i < rows&& j < columns));
-        return ptr[(i * columns) + j];
+        assert(("Index out of range", i < rows&& j < cols));
+        return ptr[(i * cols) + j];
     }
 
     void set(int i, int j, double x) {
-        assert(("Index out of range", i < rows&& j < columns));
-        ptr[(i * rows) + j] = x;
+        assert(("Index out of range", i < rows&& j < cols));
+        ptr[(i * cols) + j] = x;
     }
 
-    void addset(int i, int j, double x) {
-        assert(("Index out of range", i < rows&& j < columns));
-        ptr[(i * rows) + j] += x;
+    void AddSet(int i, int j, double x) {
+        assert(("Index out of range", i < rows&& j < cols));
+        ptr[(i * cols) + j] += x;
     }
 
-    matrix sum(matrix b) {
-        assert(("Matrices are not the same size", rows == b.getrows() && columns == b.getcolumns()));
-        matrix c(rows, columns);
+    Matrix sum(Matrix b) {
+        assert(("Matrices are not the same size", rows == b.getRows() && cols == b.getCols()));
+        Matrix c(rows, cols);
+
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                double sum = get(i, j) + b(i, j);
+            for (int j = 0; j < cols; j++) {
+                double sum = get(i, j) + b.get(i, j);
                 c.set(i, j, sum);
             }
         }
+
         return c;
     }
 
-    matrix sub(matrix b) {
-        assert(("Matrices are not the same size", rows == b.getrows() && columns == b.getcolumns()));
-        matrix c(rows, columns);
+    Matrix sub(Matrix b) {
+        assert(("Matrices are not the same size", rows == b.getRows() && cols == b.getCols()));
+        Matrix c(rows, cols);
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
+            for (int j = 0; j < cols; j++) {
                 double sum = get(i, j) - b(i, j);
                 c.set(i, j, sum);
             }
@@ -128,13 +135,13 @@ public: //public variables
         return c;
     }
 
-    matrix SimpleProduct(matrix b) {
-        assert(("Dimensions of matrices are not compatible", columns == b.getrows()));
-        matrix  c(rows, b.getcolumns());
+    Matrix SimpleProduct(Matrix b) {
+        assert(("Dimensions of matrices are not compatible", cols == b.getRows()));
+        Matrix  c(rows, b.getCols());
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < b.getcolumns(); j++) {
-                for (int k = 0; k < columns; k++) {
-                    c.addset(i, j, (get(i, k) * b(k, j)));
+            for (int j = 0; j < b.getCols(); j++) {
+                for (int k = 0; k < cols; k++) {
+                    c.AddSet(i, j, (get(i, k) * b(k, j)));
                 }
             }
         }
@@ -142,9 +149,9 @@ public: //public variables
         return c;
     }
 
-    matrix Conquer(matrix b) {
-        matrix finalMatrix(rows, columns);
-        assert(("Matrices are not of the form 2^m", conquerable == true && rows == b.getcolumns()));
+    Matrix Conquer(Matrix b) {
+        Matrix finalMatrix(rows, cols);
+        assert(("Matrices are not of the form 2^m", conquerable == true && rows == b.getCols()));
         int index = rows / 2;
 
         if (rows == 1) {
@@ -152,20 +159,20 @@ public: //public variables
         }
         else {
 
-            matrix c00(index, index);
-            matrix c01(index, index);
-            matrix c10(index, index);
-            matrix c11(index, index);
+            Matrix c00(index, index);
+            Matrix c01(index, index);
+            Matrix c10(index, index);
+            Matrix c11(index, index);
 
-            matrix a00(index, index);
-            matrix a01(index, index);
-            matrix a10(index, index);
-            matrix a11(index, index);
+            Matrix a00(index, index);
+            Matrix a01(index, index);
+            Matrix a10(index, index);
+            Matrix a11(index, index);
 
-            matrix b00(index, index);
-            matrix b01(index, index);
-            matrix b10(index, index);
-            matrix b11(index, index);
+            Matrix b00(index, index);
+            Matrix b01(index, index);
+            Matrix b10(index, index);
+            Matrix b11(index, index);
 
             //Filling submatrices
             for (int i = 0; i < index; i++) {
@@ -186,13 +193,13 @@ public: //public variables
 
             //Start of recursion
             //c00 = a00*b00 + a01*b10
-            c00 = (a00.conquer(b00)) + (a01.conquer(b10));
+            c00 = (a00.Conquer(b00)) + (a01.Conquer(b10));
             //c01 = a00*b01 + a01*b11
-            c01 = (a00.conquer(b01)) + (a01.conquer(b11));
+            c01 = (a00.Conquer(b01)) + (a01.Conquer(b11));
             //c10 = a10*b00 + a11*b01
-            c10 = (a10.conquer(b00)) + (a11.conquer(b01));
+            c10 = (a10.Conquer(b00)) + (a11.Conquer(b01));
             //c11 = a10*b01 + a11*b11
-            c11 = (a10.conquer(b01)) + (a11.conquer(b11));
+            c11 = (a10.Conquer(b01)) + (a11.Conquer(b11));
 
             //Returning values into finalMatrix
             for (int i = 0; i < index; i++) {
@@ -210,7 +217,7 @@ public: //public variables
 
     void Print() {
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
+            for (int j = 0; j < cols; j++) {
                 cout << get(i, j) << ", ";
             }
             cout << endl;
@@ -220,18 +227,17 @@ public: //public variables
     double operator () (int i, int j) {
         return get(i, j);
     }
-    matrix operator + (matrix b) {
+    Matrix operator + (Matrix b) {
         return sum(b);
     }
-    matrix operator - (matrix b) {
+    Matrix operator - (Matrix b) {
         return sub(b);
     }
 
 private:
-    int rows;
-    int columns;
+    int rows; int cols;
 
     double* ptr;
-    //denotes whether the matrix is of size 2^m
+    //denotes whether the Matrix is of size 2^m
     bool conquerable = true;
 };
