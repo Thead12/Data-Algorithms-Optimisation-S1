@@ -4,8 +4,7 @@
 #include <cassert>
 #include <vector>
 
-#include "matrix.h"
-#include "SparseMatrix.h"
+#include "matrix.h" //Requires matrix.h ============= !!!!
 
 //Uncomment to remove debug
 //#define NDEBUG
