@@ -5,8 +5,6 @@
 #include <cassert>
 #include <vector>
 
-//#include "matrix.h"
-
 //Uncomment to remove debug
 //#define NDEBUG
 
