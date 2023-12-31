@@ -18,7 +18,8 @@ class Node
 public: //public methods
     double value; //Value in node
     Node* next; //Pointer to next node
-    //Constructors
+
+    //==================== Constructors ==================
     Node()
     {
         value = 0.0;
@@ -38,7 +39,7 @@ private:
     int length; //Stores length of list
 public:
 
-    //Constructors
+    //==================== Constructors ==================
     LinkedList()
     {
         //Node();
@@ -46,7 +47,7 @@ public:
         length = 0;
     }
 
-    //Constructor to set the first value in LinkedList
+    //Getters ==================== Setters 
     double get(int index)
     {
         assert(("Index not valid.", 0 <= index && index <= length));
