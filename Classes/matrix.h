@@ -2,7 +2,11 @@
 
 //Generic dense matrix class using 1d row-major representation
 //============== Basic functions ==============
-//add()
+//add() and subract()
+//SimpleProduct() performs a naive multiplication algorithm
+//Conquer() - Uses divide and conquer algorithm
+//swapRows(i, j) swapsRows i and j in place
+//get() is returned by reference so can also be used to set values easily
 
 //============== Required includes ============== 
 //#include <iostream>
