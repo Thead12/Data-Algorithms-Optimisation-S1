@@ -2,9 +2,7 @@
 
 //Generic dense matrix class using 1d row-major representation
 //============== Basic functions ==============
-//add() and subract()
-//SimpleProduct() performs a naive multiplication algorithm
-//Conquer() - Uses divide and conquer algorithm
+//add()
 
 //============== Required includes ============== 
 //#include <iostream>
@@ -100,6 +98,40 @@ namespace Dense{
 #endif
         }
 
+        //Overload of constructor to initialise an augmented matrix
+        Matrix(Dense::Matrix<T> a, std::vector<T> b)
+        {
+            numRows = a.getNumRows();
+            numCols = a.getNumCols() + 1;
+
+            assert(("Matrix rows and length of vector are not compatible", numRows == b.size()));
+
+            //Array of pointers to store the Matrix
+            valueArray = new T[numRows * numCols];
+            // Fill augmented matrix with matrix a
+            int index = 0;
+            for (int i = 0; i < numRows; i++) {
+                for (int j = 0; j < numCols - 1; j++) {
+                    get(i, j) = a(i, j);
+                }
+            }
+
+            //Fill augmented matrix with vector b
+            for (int i = 0; i < numRows; i++)
+            {
+                get(i, numCols - 1) = b[i];
+            }
+
+#ifndef NDEBUG
+            if (numRows != numCols && isdigit(log2(numRows))) {
+                conquerable = false;
+            }
+            else {
+                conquerable = true;
+            }
+#endif
+        }
+
         //Getters ==================== Setters 
 
         int getNumCols() {
@@ -110,7 +142,7 @@ namespace Dense{
             return numRows;
         }
 
-        T get(int i, int j) {
+        T& get(int i, int j) {
             assert(("Index out of range", i < numRows&& j < numCols));
             return valueArray[(i * numCols) + j];
         }
@@ -231,6 +263,17 @@ namespace Dense{
             return finalMatrix;
         }
 
+        void swapRows(unsigned int rowA, unsigned int rowB)
+        {
+            assert(("rowA is an invalid input", 0 <= rowA && rowA < numRows));
+            assert(("rowB is an invalid input", 0 <= rowB && rowB < numRows));
+
+            for (int j = 0; j < numCols; j++)
+            {
+                std::swap(get(rowA, j), get(rowB, j));
+            }
+        }
+
         void Print() {
             for (int i = 0; i < numRows; i++) {
                 for (int j = 0; j < numCols; j++) {
@@ -240,7 +283,7 @@ namespace Dense{
             }
         }
 
-        T operator () (int i, int j) {
+        T& operator () (int i, int j) {
             return get(i, j);
         }
         Matrix operator + (Matrix b) {
@@ -249,6 +292,9 @@ namespace Dense{
         Matrix operator - (Matrix b) {
             return subtract(b);
         }
+
+        Matrix operator * (Matrix b) {
+            return SimpleProduct(b);
+        }
     };
 }
-
