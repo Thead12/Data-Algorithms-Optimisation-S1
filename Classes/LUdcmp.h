@@ -83,13 +83,13 @@ namespace LUdcmp
 		if (b.size() != n || x.size() != n) // Checks if b is a compatible vector
 			throw("LUdcmp::solve bad sizes");
 		for (int i = 0; i < n; i++) x[i] = b[i]; // Sets x = b
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < n; i++)	// This loop traverses the upper triangular matrix
 		{
 			ip = indx[i];
 			sum = x[ip];
 			x[ip] = x[i];
 			if (ii != 0)
-				for (int j = ii - 1; j < i; j++) sum -= lu(i, j) * x[j];
+				for (int j = ii - 1; j < i; j++) sum -= lu(i, j) * x[j]; // Traverse upper triangular columns
 			else if (sum != 0)	// Nonzero element encountered
 				ii = i + 1;		// So do the sums in the loop above
 			x[i] = sum;
@@ -99,6 +99,20 @@ namespace LUdcmp
 			sum = x[i];
 			for (j = i + 1; j < n; j++) sum -= lu(i, j) * x[j];
 			x[i] = sum / lu(i, i);	// Store a component of the solution vector X
+		}
+	}
+
+	// Solves the set of n linear equations A * X = B where b is a matrix, and X is the returned solution matrix
+	void LUdcmp::solve(Dense::Matrix<double>& b, Dense::Matrix<double>& x)
+	{
+		int i, j, m = b.getNumCols();
+		assert(("LUdcmp::solve bad sizes", b.getNumRows() == n && x.getNumRows() == n && b.getNumCols() == x.getNumCols())); // Ensures input matrixes are same size as lu
+		std::vector<double> xx(n);
+		for (int j = 0; j < m; j++)	// Copy and solve each column in turn
+		{
+			for (int i = 0; i < n; i++) xx[i] = b(i, j);	// Extract a row and store in x
+			solve(xx, xx);									// Use previous solve algorithm
+			for (int i = 0; i < n; i++) x(i, j) = xx[i];	// Store output of solve(xx, xx) into solution matrix
 		}
 	}
 }
