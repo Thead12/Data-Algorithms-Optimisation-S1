@@ -23,7 +23,7 @@ namespace Dense{
 
         T* valueArray;
         //denotes whether the Matrix is of size 2^m
-        bool conquerable = true;
+        bool conquerable;
 
     public:
         //==================== Constructors ====================
@@ -38,6 +38,7 @@ namespace Dense{
 
         int getNumCols();                   // Returns number of columns
         int getNumRows();                   // Returns number of rows
+        bool getConquerable();               // Returns whether matrix is conquerable
         T& get(int i, int j);               // Returns by reference value at (i, j)
         void set(int i, int j, T x);        // Sets value at (i, j)
         void AddSet(int i, int j, T x);     // Adds value at (i, j) to input x
@@ -82,11 +83,11 @@ namespace Dense{
         }
         //checking to see if the Matrix is size N = 2^m
 #ifndef NDEBUG
-        if (numRows != numCols && isdigit(log2(numRows))) {
-            conquerable = false;
+        if (numRows == numCols && isdigit(log2(numRows))) {
+            conquerable = true;
         }
         else {
-            conquerable = true;
+            conquerable = false;
         }
 #endif
     }
@@ -107,16 +108,15 @@ namespace Dense{
         }
         //checking to see if the Matrix is size N = 2^m
 #ifndef NDEBUG
-        if (numRows != numCols && isdigit(int(log2(numRows)))) {
-            conquerable = false;
+        if (numRows == numCols && isdigit(log2(numRows))) {
+            conquerable = true;
         }
         else {
-            conquerable = true;
+            conquerable = false;
         }
 #endif
     }
 
-    
     template<typename T>
     // Overload of constructor to make column matrix from given 1d vector
     Matrix<T>::Matrix(std::vector<T> grid) : numRows(grid.size()), numCols(1)
@@ -130,7 +130,7 @@ namespace Dense{
         }
         //checking to see if the Matrix is size N = 2^m
 #ifndef NDEBUG
-        if (numRows != numCols && isdigit(int(log2(numRows)))) {
+        if (numRows != numCols && !isdigit(int(log2(numRows)))) {
             conquerable = false;
         }
         else {
@@ -154,11 +154,11 @@ namespace Dense{
         }
         //checking to see if the Matrix is size N = 2^m
 #ifndef NDEBUG
-        if (numRows != numCols && isdigit(log2(numRows))) {
-            conquerable = false;
+        if (numRows == numCols && isdigit(log2(numRows))) {
+            conquerable = true;
         }
         else {
-            conquerable = true;
+            conquerable = false;
         }
 #endif
     }
@@ -189,11 +189,11 @@ namespace Dense{
         }
 
 #ifndef NDEBUG
-        if (numRows != numCols && isdigit(log2(numRows))) {
-            conquerable = false;
+        if (numRows == numCols && isdigit(log2(numRows))) {
+            conquerable = true;
         }
         else {
-            conquerable = true;
+            conquerable = false;
         }
 #endif
     }
@@ -206,6 +206,11 @@ namespace Dense{
     template<typename T>
     int Matrix<T>::getNumRows() {
         return numRows;
+    }
+
+    template<typename T>
+    bool Matrix<T>::getConquerable() {
+        return conquerable;
     }
 
     template<typename T>
@@ -233,11 +238,9 @@ namespace Dense{
 
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
-                T sum = get(i, j) + b.get(i, j);
-                c.set(i, j, sum);
+                c(i, j) = get(i, j) + b.get(i, j);
             }
         }
-
         return c;
     }
 
@@ -247,8 +250,7 @@ namespace Dense{
 
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
-                T sum = get(i, j) + b.get(i, j);
-                c.set(i, j, sum);
+                c(i, j) = get(i, j) + b.get(i, j);
             }
         }
     }
@@ -296,7 +298,6 @@ namespace Dense{
     template<typename T>
     void Matrix<T>::SimpleProduct(Matrix& b, Matrix<T>& c) {
         assert(("Dimensions of matrices are not compatible", numCols == b.getNumRows()));
-        Matrix  c(numRows, b.getNumCols());
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < b.getNumCols(); j++) {
                 for (int k = 0; k < numCols; k++) {
@@ -361,13 +362,13 @@ namespace Dense{
 
             //Start of recursion
              //c00 = a00*b00 + a01*b10
-            c00 = (a00.Conquer(b00)) + (a01.Conquer(b10));
+            c00 = (a00.Conquer(b00, breakPoint, index)) + (a01.Conquer(b10, breakPoint, index));
             //c01 = a00*b01 + a01*b11
-            c01 = (a00.Conquer(b01)) + (a01.Conquer(b11));
+            c01 = (a00.Conquer(b01, breakPoint, index)) + (a01.Conquer(b11, breakPoint, index));
             //c10 = a10*b00 + a11*b01
-            c10 = (a10.Conquer(b00)) + (a11.Conquer(b01));
+            c10 = (a10.Conquer(b00, breakPoint, index)) + (a11.Conquer(b01, breakPoint, index));
             //c11 = a10*b01 + a11*b11
-            c11 = (a10.Conquer(b01)) + (a11.Conquer(b11));
+            c11 = (a10.Conquer(b01, breakPoint, index)) + (a11.Conquer(b11, breakPoint, index));
 
             //Returning values into finalMatrix
             for (int i = 0; i < index; i++) {
