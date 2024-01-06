@@ -23,7 +23,7 @@ namespace Dense{
 
         T* valueArray;
         //denotes whether the Matrix is of size 2^m
-        bool conquerable;
+        bool conquerable = true;
 
     public:
         //==================== Constructors ====================
