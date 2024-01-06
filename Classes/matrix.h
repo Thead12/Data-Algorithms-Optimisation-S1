@@ -83,7 +83,7 @@ namespace Dense{
         }
         //checking to see if the Matrix is size N = 2^m
 #ifndef NDEBUG
-        if (numRows == numCols && isdigit(log2(numRows))) {
+        if (numRows == numCols && !isdigit(log2(numRows))) {
             conquerable = true;
         }
         else {
@@ -107,7 +107,7 @@ namespace Dense{
         }
         //checking to see if the Matrix is size N = 2^m
 #ifndef NDEBUG
-        if (numRows == numCols && isdigit(log2(numRows))) {
+        if (numRows == numCols && !isdigit(log2(numRows))) {
             conquerable = true;
         }
         else {
@@ -153,7 +153,7 @@ namespace Dense{
         }
         //checking to see if the Matrix is size N = 2^m
 #ifndef NDEBUG
-        if (numRows == numCols && isdigit(log2(numRows))) {
+        if (numRows == numCols && !isdigit(log2(numRows))) {
             conquerable = true;
         }
         else {
@@ -186,15 +186,7 @@ namespace Dense{
         {
             get(i, numCols - 1) = b[i];
         }
-
-#ifndef NDEBUG
-        if (numRows == numCols && isdigit(log2(numRows))) {
-            conquerable = true;
-        }
-        else {
-            conquerable = false;
-        }
-#endif
+        conquerable = false;
     }
 
     template<typename T>
