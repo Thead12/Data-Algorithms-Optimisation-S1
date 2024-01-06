@@ -51,8 +51,13 @@ int main() {
     // Test Conquer (if applicable)
     if (matrix2.getConquerable()) {
         Matrix<int> conquerResult = matrix2.Conquer(matrix1, 1, matrix2.getNumRows());
-        assert(conquerResult(0, 0) == 30);
+        assert(conquerResult(0, 0) == 0);
     }
+
+    Matrix<int> conquer1(16, 16, 1);
+    Matrix<int> conquer2(16, 16, 2);
+    Matrix<int> conquerResult = conquer2.Conquer(conquer1, 2, conquer2.getNumRows());
+    assert(conquerResult(0, 0) == (conquer1 * conquer2)(0, 0));
 
     // Test swapRows
     matrix1.swapRows(0, 1);
