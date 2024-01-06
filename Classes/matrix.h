@@ -38,7 +38,7 @@ namespace Dense{
 
         int getNumCols();                   // Returns number of columns
         int getNumRows();                   // Returns number of rows
-        bool getConquerable();               // Returns whether matrix is conquerable
+        bool getConquerable();              // Returns whether matrix is conquerable
         T& get(int i, int j);               // Returns by reference value at (i, j)
         void set(int i, int j, T x);        // Sets value at (i, j)
         void AddSet(int i, int j, T x);     // Adds value at (i, j) to input x
@@ -48,7 +48,7 @@ namespace Dense{
         void subtract(Matrix &b, Matrix &c);// Subtracts two matrices in-place, storing output in c
         Matrix SimpleProduct(Matrix &b);    // Uses naive multiplication to multiply two matrices
         void SimpleProduct(Matrix &b, Matrix &c); // Uses naive multiplication to multiply two matrices in-place, storing output in c
-        Matrix Conquer(Matrix &b, int breakPoint, int size);          // Uses divide and conquer to multiply two matrices
+        Matrix Conquer(Matrix &b, int breakPoint, int size); // Uses divide and conquer to multiply two matrices
         void swapRows(unsigned int rowA, unsigned int rowB); // Swaps two rows
         void Print(); // Prints whole matrix
 
@@ -96,9 +96,8 @@ namespace Dense{
     // Overload of constructor to make matrix from given vector
     Matrix<T>::Matrix(std::vector<std::vector<T> > grid) : numRows(grid.size()), numCols(grid[0].size())
     {
-
         valueArray = new T[numRows * numCols];   //Array of pointers to store the Matrix
-        //assert(("Vector and Matrix size to not match.", grid.size() == numRows && grid[0].size() == numCols));
+        assert(("Vector and Matrix size to not match.", grid.size() == numRows && grid[0].size() == numCols));
         int index = 0;
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
@@ -309,7 +308,7 @@ namespace Dense{
 
     template<typename T>
     Matrix<T> Matrix<T>::Conquer(Matrix &b, int breakPoint, int size) {
-        assert(("Matrices are not of the form 2^m", conquerable == true && numRows == b.getNumCols()));
+        assert(("Matrices are not of the form 2^m", conquerable == true && b.getConquerable() == true && numRows == b.getNumCols()));
         //Creating the final matrix which will contain the completed multiplication
         Matrix finalMatrix(numRows, numCols);
 
