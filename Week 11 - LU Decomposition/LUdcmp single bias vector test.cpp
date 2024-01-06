@@ -11,6 +11,7 @@
 //#define NDEBUG
 #include<cassert>
 
+#include "matrix.h"
 #include "LUdcmp.h"
 
 void LineBreak() {
