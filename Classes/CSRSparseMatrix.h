@@ -1,5 +1,6 @@
 #pragma once
 
+// SparseMatrix class using LinkedList representation
 // SparseMatrix class using CSR representation
 //============== Basic functions ==============
 // Various constructors for instantiating from Vectors, DenseMatrices and LinkedListSparseMatrices
@@ -10,16 +11,16 @@
 // PrintDense() prints matrix in dense representation to console
 
 //============== Required includes ============== 
-//#include <iostream>
-//#include<vector>
+#include <iostream>
+#include<vector>
 
 //Uncomment to remove debug
 //#define NDEBUG
-//#include<cassert>
+#include<cassert>
 
 //============== Dependent headerfiles ==============
-//#include "matrix.h"
-//#include "LinkedListSparseMatrix.h"
+#include "matrix.h"
+#include "LinkedListSparseMatrix.h"
 
 namespace CSR {
 
@@ -32,6 +33,12 @@ namespace CSR {
         std::vector<int> rowPointers;
         std::vector<int> columnIndices;
         std::vector<T> values;
+
+        SparseMatrix(int initRows, int initCols) : numRows(initRows), numCols(initCols)
+        {
+            assert(("Matrix dimensions cannot be zero or negative", initRows > 0 && initCols > 0));
+            rowPointers.push_back(0); //Initialise with 0 for first row        
+        }
 
         void addElement(int col, T value)
         {
@@ -50,14 +57,7 @@ namespace CSR {
 
     public:
         //==================== Constructors ==================
-        //Constructor for empty Matrix
-        SparseMatrix(int initRows, int initCols) : numRows(initRows), numCols(initCols)
-        {
-            assert(("Matrix dimensions cannot be zero or negative", initRows > 0 && initCols > 0));
-            rowPointers.push_back(0); //Initialise with 0 for first row        
-        }
-
-        // Constructor for converting from vector
+        // Constructor for converting from 2d vector
         SparseMatrix(std::vector<std::vector<T>> denseVector) : numRows(denseVector.size()), numCols(denseVector[0].size())
         {
             //Initialise rowPointers
@@ -113,7 +113,6 @@ namespace CSR {
         T get(int row, int col) const
         {
             assert(("Index out of range", 0 <= row && row < numRows && 0 <= col && col < numCols));
-
             // Find the range of indices for the specified row
             int start = rowPointers[row];
             int end = rowPointers[row + 1];
@@ -133,12 +132,12 @@ namespace CSR {
             assert(("Index out of range", 0 <= row && row < numRows && 0 <= col && col < numCols));
             //Find the range of indices for the specified row
             int start = rowPointers[row];
-            //std::cout << "We go out of range on line 125" << std::endl;
             int end = rowPointers[row + 1];
 
             //Search for the colum index in the specified range
             for (int i = start; i < end; ++i) {
                 //If column already exists, update the value
+
                 if (columnIndices[i] == col) {
                     values[i] = value;
                     return;
