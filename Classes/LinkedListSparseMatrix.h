@@ -329,7 +329,7 @@ namespace LinkedList {
             return numCols;
         }
 
-        T& get(int i, int j)
+        T get(int i, int j)
         {
             //checking if indexes are valid
             assert(("Row index not valid.", 0 <= i && i < numRows));
@@ -348,7 +348,7 @@ namespace LinkedList {
                 }
             }
 
-            return 0; // If i,j coords do not match in sparse matrix then it must be zero
+            return T(); // If i,j coords do not match in sparse matrix then it must be zero
         }
 
         //This function can both replace an existing node and create a new one depending on the current value in the matrix
