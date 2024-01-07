@@ -1,5 +1,4 @@
-//Contains various tests for Week 5's - LinkedList SparseMatrix task
-
+//============== Required includes ============== 
 #include <iostream>
 #include<vector>
 
@@ -7,40 +6,54 @@
 //#define NDEBUG
 #include<cassert>
 
+//============== Dependent headerfiles ==============
 #include "matrix.h"
 #include "LinkedListSparseMatrix.h"
 
 int main()
 {
-    vector<vector<double>> denseVectorA = {
-        {0, 0, 0, 0},
-        {0, 1, 0, 0},
-        {0, 0, 2, 0},
-        {0, 0, 0, 3},
-        {0, 0, 0, 0}
+    using namespace LinkedList;
+
+    // Test SparseLinkedList
+    SparseLinkedList<double> sparseList;
+    sparseList.InsertTail(1, 10.5);
+    sparseList.InsertTail(3, 7.2);
+    sparseList.InsertTail(5, -3.8);
+
+    std::cout << "Sparse Linked List:" << std::endl;
+    sparseList.PrintList();
+    std::cout << std::endl;
+
+    // Test SparseMatrix
+    std::vector<std::vector<double>> denseVector = {
+        {0, 0, 0, 0, 0},
+        {0, 2.3, 0, 0, 0},
+        {0, 0, 0, 1.8, 0},
+        {0, 0, 0, 0, 0}
     };
 
-    vector<vector<double>> denseVectorB = {
-        {0, 2, 0, 0},
-        {0, 1, 3, 5},
-        {4, 9, 2, 1},
-        {5, 7, 6, 3},
-        {8, 6, 4, 0}
-    };
+    SparseMatrix<double> sparseMatrix(denseVector);
 
-    Matrix denseA = Matrix(5, 4, denseVectorA);
-    Matrix denseB = Matrix(5, 4, denseVectorB);
+    std::cout << "Original Sparse Matrix:" << std::endl;
+    sparseMatrix.PrintSparse();
+    std::cout << std::endl;
 
-    
-    SparseMatrix sparseA = SparseMatrix(5, 4, denseVectorA);
-    SparseMatrix sparseB = SparseMatrix(5, 4, denseVectorB);
+    // Test matrix operations
+    SparseMatrix<double> sparseMatrix2(4, 5);
+    sparseMatrix2.set(1, 1, 3.7);
+    sparseMatrix2.set(2, 3, -2.1);
 
-    SparseMatrix sparseAdditionTest = sparseA.SubtractSparse(sparseB);
-    Matrix denseAdditionTest = sparseA.SubtractDense(denseB);
+    SparseMatrix<double> addedMatrix = sparseMatrix.AddSparse(sparseMatrix2);
+    assert(addedMatrix.get(1, 1) == (2.3 + 3.7));
+    assert(addedMatrix.get(2, 3) == (1.8 + -2.1));
+    std::cout << "Sparse Matrix Addition:" << std::endl;
+    addedMatrix.PrintSparse();
+    std::cout << std::endl;
 
-    sparseAdditionTest.PrintDense();
+    Dense::Matrix<double> denseMatrix(denseVector);
 
-    cout << endl;
-
-    denseAdditionTest.Print();
+    Dense::Matrix<double> subtractedMatrix = sparseMatrix.SubtractDense(denseMatrix);
+    std::cout << "Sparse Matrix - Dense Matrix Subtraction:" << std::endl;
+    subtractedMatrix.Print();
+    std::cout << std::endl;
 }
