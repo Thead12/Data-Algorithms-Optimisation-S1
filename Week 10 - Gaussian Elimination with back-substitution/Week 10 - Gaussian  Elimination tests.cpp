@@ -162,7 +162,7 @@ void testBackSubstitution() {
     }
 }
 
-void gaussElimination(Dense::Matrix<double>& A) // The problem is here --------------- !!!!!!!!!!!!!!
+void gaussElimination(Dense::Matrix<double>& A)
 {
     int m = A.getNumRows();
     int n = A.getNumCols();
