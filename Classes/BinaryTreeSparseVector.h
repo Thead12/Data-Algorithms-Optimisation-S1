@@ -68,24 +68,23 @@ namespace BinaryTree
 
 			T getValueRec(TreeNode<T>* node, int index)
 			{
-				if (node)
-				{
-					if (index < node->index)
-					{
-						getValueRec(node->left, index);
-					}
-					else if (index > node->index)
-					{
-						getValueRec(node->right, index);
-					}
-					else
-					{
-						return node->value;
-					}
+				if (!node) {
+					// If the node is null or the index is not found
+					//returns a default-constructed value
+					return T();
 				}
-				else
-				{
-					return NULL;
+
+				if (index < node->index) {
+					// If the index is less than the current node's index, search in the left subtree
+					return getValueRec(node->left, index);
+				}
+				else if (index > node->index) {
+					// If the index is greater than the current node's index, search in the right subtree
+					return getValueRec(node->right, index);
+				}
+				else {
+					// If the index matches the current node's index, return the value
+					return node->value;
 				}
 			}
 
@@ -126,6 +125,7 @@ namespace BinaryTree
 	//SparseVector implementation using self balancing AVL binary tree
 	namespace Balanced
 	{
+		
 		template <typename T>
 		struct TreeNode
 		{
@@ -144,8 +144,8 @@ namespace BinaryTree
 		private:
 			TreeNode<T>* root;
 
-			int minimumBalanceFactor;
-			int maximumBalanceFactor;
+			int minimumBalanceFactor = 0;
+			int maximumBalanceFactor = 0;
 
 			int getHeight(TreeNode<T>* node)
 			{
@@ -284,8 +284,8 @@ namespace BinaryTree
 					else if (balanceFactor > maximumBalanceFactor) {
 						maximumBalanceFactor = balanceFactor;
 					}
-					std::cout << "[BF: " << balanceFactor << "] ";
-					std::cout << "(" << node->index << ", " << node->value << "), ";
+					std::cout << "[BF: " << balanceFactor << "] -->\t";
+					std::cout << "(" << node->index << ", " << node->value << "), " << std::endl;;
 					inOrderTraversal(node->right);
 				}
 			}
