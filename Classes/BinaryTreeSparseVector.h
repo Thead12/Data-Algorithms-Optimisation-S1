@@ -6,13 +6,12 @@
 // Both have get and set functions aswell as the ability to convert from dense vectors
 
 //============== Required includes ============== 
-//#include <iostream>
-//#include<vector>
-//#include<algorithm>
+#include <iostream>
+#include<vector>
 
 //Uncomment to remove debug
 //#define NDEBUG
-//#include<cassert>
+#include<cassert>
 
 namespace BinaryTree
 {
