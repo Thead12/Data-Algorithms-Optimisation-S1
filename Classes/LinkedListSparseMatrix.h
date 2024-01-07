@@ -23,7 +23,7 @@ namespace LinkedList {
     template<typename T>
     class SparseNode
     {
-    public: //public methodsf
+    public: //public methods
         std::vector<T> value; //Value in node
         SparseNode<T>* next; //Pointer to next SparseNode
         //Constructors
@@ -329,7 +329,7 @@ namespace LinkedList {
             return numCols;
         }
 
-        T get(int i, int j)
+        T& get(int i, int j)
         {
             //checking if indexes are valid
             assert(("Row index not valid.", 0 <= i && i < numRows));
