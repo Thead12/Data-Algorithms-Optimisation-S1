@@ -1,52 +1,42 @@
-// Week 6-7 - Trees Sparse Vectors and Matrices.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
+//============== Required includes ============== 
 #include <iostream>
 #include<vector>
-#include<algorithm>
 
 //Uncomment to remove debug
 //#define NDEBUG
 #include<cassert>
 
-#include "matrix.h"
-#include "LinkedListSparseMatrix.h"
-#include "CSRSparseMatrix.h"
+//============== Dependent headerfiles ==============
 #include "SparseVector.h"
 
+int main()
+{
+    using namespace BinaryTree;
 
+    // Test Unbalanced SparseVector
+    Unbalanced::SparseVector<double> unbalancedVector;
+    unbalancedVector.insert(2, 5.6);
+    unbalancedVector.insert(5, -3.2);
+    unbalancedVector.insert(0, 8.1);
+    unbalancedVector.insert(3, 2.7);
 
-void LineBreak() {
-    std::cout << '\n';
-}
+    std::cout << "Unbalanced Sparse Vector:" << std::endl;
+    unbalancedVector.print();
+    std::cout << "Value at index 5: " << unbalancedVector.getValue(5) << std::endl;
+    assert(unbalancedVector.getValue(5) == -3.2);
+    std::cout << std::endl;
 
-void Print(std::string message) {
-    std::cout << message << std::endl;
-}
+    // Test Balanced SparseVector
+    Balanced::SparseVector<double> balancedVector;
+    balancedVector.insert(2, 5.6);
+    balancedVector.insert(5, -3.2);
+    balancedVector.insert(0, 8.1);
+    balancedVector.insert(3, 2.7);
 
-template<typename T>
-void Print(T message) {
-    std::cout << message << std::endl;
-}
-
-
-int main() {
-	std::vector<double> vector = { 0, 0, 1, 2, 3.2, 0, 0, 1.0, 5.5546, 0, 0, 4.5, 0, 216 };
-
-	BinaryTree::Balanced::SparseVector<double> sparseVector(vector);
-
-	sparseVector.insert(2, 3.5);
-	sparseVector.insert(5, 1.2);
-	sparseVector.insert(3, -4.0);
-
-	sparseVector.print();
-
-	LineBreak();
-
-	sparseVector.printBFRange();
-
-	LineBreak();
-
-	Print(sparseVector.getValue(2));
-
+    std::cout << "Balanced Sparse Vector:" << std::endl;
+    balancedVector.print();
+    std::cout << "Value at index 5: " << balancedVector.getValue(5) << std::endl;
+    assert(balancedVector.getValue(5) == -3.2);
+    balancedVector.printBFRange();
+    std::cout << std::endl;
 }
