@@ -1,15 +1,14 @@
 #pragma once
 
 //Week 6-7 challange
-// Implementation of a SparseMatrix class using a quad tree structure 
 
 //============== Required includes ============== 
-//#include <iostream>
-//#include<vector>
+#include <iostream>
+#include<vector>
 
 //Uncomment to remove debug
 //#define NDEBUG
-//#include<cassert>
+#include<cassert>
 
 namespace QuadTree 
 {
@@ -107,7 +106,7 @@ namespace QuadTree
 		}
 
 		//Constructor for initialising from dense matrix
-		SparseMatrix(Dense::Matrix<T> matrix) : numRows(matrix.getNumRows()), numColumns(matrix.getNumCols), root(new QuadNode<T>(T()))
+		SparseMatrix(Dense::Matrix<T> matrix) : numRows(matrix.getNumRows()), numColumns(matrix.getNumCols()), root(new QuadNode<T>(T()))
 		{
 			for (int i = 0; i < numRows; i++)
 			{
@@ -118,10 +117,20 @@ namespace QuadTree
 			}
 		}
 
+		int getNumRows()
+		{
+			return numRows;
+		}
+
+		int getNumCols()
+		{
+			return numColumns;
+		}
+
 		void setValue(int rowIndex, int columnIndex, T value)
 		{
 			assert(("Index out of range", 0 <= rowIndex && rowIndex < numRows && 0 <= columnIndex && columnIndex < numColumns));
-			setValueRec(root, rowIndex, columnIndex, numRows, numColumns, value);
+			setValueRec(root, rowIndex, columnIndex, numRows, numColumns, value);	
 		}
 
 		T getValue(int rowIndex, int columnIndex) 
@@ -143,4 +152,3 @@ namespace QuadTree
 		}
 	};
 }
-
