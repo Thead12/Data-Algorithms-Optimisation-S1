@@ -7,15 +7,15 @@
 // AddDense() and SubDense() takes DenseMatrix inputs and outputs DenseMatrices - Could further improve this functionality
 
 //============== Required includes ============== 
-//#include <iostream>
-//#include<vector>
+#include <iostream>
+#include<vector>
 
 //Uncomment to remove debug
 //#define NDEBUG
-//#include<cassert>
+#include<cassert>
 
 //============== Dependent headerfiles ==============
-//#include "matrix.h"
+#include "matrix.h"
 
 namespace LinkedList {
 
@@ -23,13 +23,13 @@ namespace LinkedList {
     template<typename T>
     class SparseNode
     {
-    public: //public methods
+    public: //public methodsf
         std::vector<T> value; //Value in node
         SparseNode<T>* next; //Pointer to next SparseNode
         //Constructors
         SparseNode()
         {
-            value = {nullptr, nullptr};
+            value = { nullptr, nullptr };
             next = nullptr;
         }
 
@@ -52,7 +52,7 @@ namespace LinkedList {
         SparseLinkedList()
         {
             //SparseNode();
-            head = NULL;
+            head = nullptr;
             length = 0;
         }
 
@@ -125,10 +125,10 @@ namespace LinkedList {
         void InsertBehind(int index, double col, T data)
         {
             //Create new Node
-            SparseNode<T>* newNode = new SparseNode(col, data);
+            SparseNode<T>* newNode = new SparseNode<T>(col, data);
 
             //If list is empty
-            if (head == NULL) {
+            if (head == nullptr) {
                 head = newNode;
 
                 length++;
@@ -159,7 +159,7 @@ namespace LinkedList {
             SparseNode<T>* newNode = new SparseNode(col, data);
 
             //If list if empty
-            if (head == NULL) {
+            if (head == nullptr) {
                 head = newNode;
 
                 length++;
@@ -184,10 +184,10 @@ namespace LinkedList {
         void InsertHead(double col, T data)
         {
             //Create new node
-            SparseNode<T>* newNode = new SparseNode(col, data);
+            SparseNode<T>* newNode = new SparseNode<T>(col, data);
 
             //If list is empty
-            if (head == NULL) {
+            if (head == nullptr) {
                 head = newNode;
 
                 length++;
@@ -206,12 +206,12 @@ namespace LinkedList {
 
         void InsertTail(T col, T data)
         {
-            assert(("Column index must be an integer", floor(col)==ceil(col)));
+            assert(("Column index must be an integer", floor(col) == ceil(col)));
             //Create new SparseNode
             SparseNode<T>* newNode = new SparseNode<T>(col, data);
 
             //If list is empty
-            if (head == NULL) {
+            if (head == nullptr) {
                 head = newNode;
 
                 length++;
@@ -220,7 +220,7 @@ namespace LinkedList {
             else {
                 //Traverse till end of list
                 SparseNode<T>* temp = head;
-                while (temp->next != NULL) {
+                while (temp->next != nullptr) {
 
                     //Update temp
                     temp = temp->next;
@@ -240,12 +240,12 @@ namespace LinkedList {
             SparseNode<T>* temp = head;
 
             //Check for empty list
-            if (head == NULL) {
+            if (head == nullptr) {
                 std::cout << "List empty" << std::endl;
                 return;
             }
 
-            while (temp != NULL) {
+            while (temp != nullptr) {
                 std::cout << temp->value[0] << ", " << temp->value[1] << std::endl;
                 temp = temp->next;
             }
@@ -264,7 +264,7 @@ namespace LinkedList {
     public:
 
         //================ Constructors =====================
-        
+
         //Constructor for creating empty Sparse matrix
         SparseMatrix(int initRows, int initCols)
         {
@@ -482,7 +482,7 @@ namespace LinkedList {
             int matrix2Rows = matrix2.getNumRows(); int matrix2Cols = matrix2.getNumCols(); //Getting the number of columns and rows in matrix 2
             assert(("Matrix dimensions do not match.", numRows == matrix2Rows && numCols == matrix2Cols)); //Ensuring the dimensions of the two matrices are the same
 
-            Dense::Matrix result = Dense::Matrix(numRows, numCols);
+            Dense::Matrix<T> result(numRows, numCols);
 
             //Traversing Sparse matrix and adding that to the dense result matrix first
             for (int row = 0; row < numRows; row++) {
@@ -495,7 +495,7 @@ namespace LinkedList {
                 }
             }
 
-            result = result.sub(matrix2); //Subtracting dense matrix2 from dense matrix version of original sparse matrix
+            result = result.subtract(matrix2); //Subtracting dense matrix2 from dense matrix version of original sparse matrix
 
             return result;
         }
