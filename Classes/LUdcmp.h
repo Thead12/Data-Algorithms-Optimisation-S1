@@ -1,12 +1,14 @@
 #pragma once
 
-//#include <iostream>
-//#include<vector>
+#include <iostream>
+#include<vector>
 
-//#include<matrix.h>
+
 //Uncomment to remove debug
 //#define NDEBUG
-//#include<cassert>
+#include<cassert>
+
+#include<matrix.h>
 
 namespace LUdcmp
 {
@@ -37,7 +39,7 @@ namespace LUdcmp
 		{
 			big = 0;
 			for (int j = 0; j < n; j++)
-				if (big < (temp = abs(lu(i, j)))) big = temp; // Finds the largest value in the column
+				if ((temp = abs(lu(i, j))) > big) big = temp; // Finds the largest value in the column
 			if (big == 0) throw("Singular matrix in LUdcmp"); // Stops algorithm as the matrix is singular
 			// else 
 			vv[i] = 1 / big; // Save the scaling as there is no nonzero largest element
