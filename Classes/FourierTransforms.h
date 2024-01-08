@@ -4,14 +4,14 @@
 // Implementation of various fourier transform algorithms
 
 //============== Required includes ============== 
-//#include <iostream>
-//#include<complex>
-//#include<cmath>
-//#include<vector>
+#include <iostream>
+#include<complex>
+#include<cmath>
+#include<vector>
 
 //Uncomment to remove debug
 //#define NDEBUG
-//#include<cassert>
+#include<cassert>
 
 typedef std::complex<double> Complex;
 
@@ -20,9 +20,9 @@ namespace FT
 	const double PI = 3.141592653589793238462643383279502884;
 }
 
-bool ensureNyquistCompliance(double f_sampling, double  f_max)
+bool ensureNyquistCompliance(double f_sampling, double  dt)
 {
-	double f_nyquist = f_max * 2.0;
+	double f_nyquist =  0.5*dt;
 	return f_sampling > f_nyquist;
 }
 
@@ -171,10 +171,12 @@ void FFT_BitReversal(std::vector<Complex>& x)
 
 	int numOfBits = int(log2(N)); // Assuming N is a power of 2
 
+	unsigned int reversedIndex = 0;
+
 	// Order the data
 	for (int index = 0; index < N; ++index)
 	{
-		unsigned int reversedIndex = reverseBits(index, numOfBits);
+		reversedIndex = reverseBits(index, numOfBits);
 
 		if (index < reversedIndex)
 		{
