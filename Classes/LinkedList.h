@@ -3,12 +3,12 @@
 //LinkedList class for week 5
 
 //============== Required includes ============== 
-//#include <iostream>
-//#include<vector>
+#include <iostream>
+#include<vector>
 
 //Uncomment to remove debug
 //#define NDEBUG
-//#include<cassert>
+#include<cassert>
 
 //Node class
 class Node
