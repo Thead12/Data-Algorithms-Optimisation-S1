@@ -21,44 +21,45 @@ void Print(std::string message, T data)
     std::cout << message << data << std::endl;
 }
 
-double x_function(double t, int A)
+double x_function(double t, int N)
 {
     double sin_term = sin(t / 2.0);
-    return (sin_term != 0.0) ? (sin((A + 0.5) * t) / sin_term - 1.0) : 0.0;
+    return (sin_term != 0.0) ? ((sin((N + 0.5) * t) / sin_term) - 1.0) : 0.0;
 }
 
 int main() {
 
     // Example usage
-    const int N = 256; // Number of samples
-    const double dt = 0.1;  // Time step
+    const int N = 1024; // Number of samples
+    const double dt = 0.01;  // Time step
     const  double T = N * dt; // Total time duration
     const double f_sampling = 10.0 / dt; //Sampling frequency
-
+    double frequency = 0;
     // Sample the function x(t)
     double t[N];
-    std::complex<double> x[N];
+    std::complex<double> x[N]; // Signal in time domain
+    std::complex<double> X[N]; // Signal in frequency domain
+
     for (int n = 0; n < N; ++n)
     {
         t[n] = n * dt;
-        x[n] = std::complex<double> (x_function(t[n], 4.0), 0.0);
+        x[n] = std::complex<double>(x_function(t[n], N), 0.0);
     }
 
     //Calculate DFT
-    std::complex<double> X[N];
     DFT(x, X, N);
 
-    // Find maximum frequency
-    double f_max = findDominantFrequency(X, N, f_sampling);
-    // Check if sampling frequency obeys Nyquist limit
-    bool nyquistCompliance = ensureNyquistCompliance(f_sampling, f_max);
-    // Analyse the spectrum and count peaks
-    int independentFrequencies = findIndependentFrequencies(X, N, 10.0);
+    
+    double f_max = findDominantFrequency(X, N, f_sampling);                  // Find maximum frequency
+    bool nyquistCompliance = ensureNyquistCompliance(f_sampling, f_max);     // Check if sampling frequency obeys Nyquist limit
+    int independentFrequencies = findIndependentFrequencies(X, N, .0);     // Analyse the spectrum and count 
 
     // Display DFT results
     std::cout << "DFT: " << std::endl;
     for (int i = 0; i < N; ++i) {
-        std::cout << "#" << i << ":\t" << x[i] << " \t>> abs: " << abs(X[i]) << " >> phase: " << arg(X[i]) << std::endl;
+        frequency = i / (N * dt);
+
+        std::cout << "Frequency: " << frequency << " Hz, Magnitude: " << std::abs(X[i]) << "Phase: " << arg(X[i]) << std::endl;
     }
     std::cout << std::endl;
 
