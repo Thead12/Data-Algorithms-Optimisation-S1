@@ -5,12 +5,12 @@
 //add()
 
 //============== Required includes ============== 
-//#include <iostream>
+#include <iostream>
 #include<vector>
 
 //Uncomment to remove debug
 //#define NDEBUG
-//#include<cassert>
+#include<cassert>
 
 namespace Dense{
     //Matrix class using 1d row major order
