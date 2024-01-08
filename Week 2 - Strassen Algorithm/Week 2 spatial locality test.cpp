@@ -3,10 +3,11 @@
 
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 using namespace std;
 
-#define SIZE 4
+#define SIZE 1024
 #define INDEX SIZE/2
 
 namespace matrix {
@@ -18,11 +19,16 @@ namespace matrix {
     vector<vector<double>> A01(INDEX, rows);
     vector<vector<double>> A10(INDEX, rows);
     vector<vector<double>> A11(INDEX, rows);
-             
+
     vector<vector<double>> B00(INDEX, rows);
     vector<vector<double>> B01(INDEX, rows);
     vector<vector<double>> B10(INDEX, rows);
     vector<vector<double>> B11(INDEX, rows);
+
+    vector<vector<double>> C00(INDEX, rows);
+    vector<vector<double>> C01(INDEX, rows);
+    vector<vector<double>> C10(INDEX, rows);
+    vector<vector<double>> C11(INDEX, rows);
 
     vector<vector<double>> M1(INDEX, rows);
     vector<vector<double>> M2(INDEX, rows);
@@ -31,12 +37,6 @@ namespace matrix {
     vector<vector<double>> M5(INDEX, rows);
     vector<vector<double>> M6(INDEX, rows);
     vector<vector<double>> M7(INDEX, rows);
-
-    //vector<vector<double>> M[7] = { M1, M2, M3, M4, M5, M6, M7 };
-
-    //Create temporary matrices for storing in-place calculations
-    std::vector<std::vector<double>> tempA(INDEX, rows);
-    std::vector<std::vector<double>> tempB(INDEX, rows);
 }
 
 void NaiveMultiplication(const vector<vector<double>>& matrixA, const vector<vector<double>>& matrixB, vector<vector<double>>& result, int size)
@@ -70,7 +70,7 @@ void SubMatrices(const vector<vector<double>>& matrixA, const vector<vector<doub
     }
 }
 
-vector<vector<double>> DivideAndConquer(const vector<vector<double>> &matrixA, const vector<vector<double>> &matrixB, int size) {
+vector<vector<double>> DivideAndConquer(const vector<vector<double>>& matrixA, const vector<vector<double>>& matrixB, int size) {
     //Creating the final matrix which will contain the completed multiplication
     vector<double> finalRows(size, 0);
     vector<vector<double> > finalMatrix(size, finalRows);
@@ -107,12 +107,12 @@ vector<vector<double>> DivideAndConquer(const vector<vector<double>> &matrixA, c
                 matrixA00[i][j] = matrixA[i][j];
                 matrixA01[i][j] = matrixA[i][j + index];
                 matrixA10[i][j] = matrixA[i + index][j];
-                matrixA11[i][j] = matrixA[i + index][i + index];
+                matrixA11[i][j] = matrixA[i + index][j + index];
 
                 matrixB00[i][j] = matrixB[i][j];
                 matrixB01[i][j] = matrixB[i][j + index];
                 matrixB10[i][j] = matrixB[i + index][j];
-                matrixB11[i][j] = matrixB[i + index][i + index];
+                matrixB11[i][j] = matrixB[i + index][j + index];
             }
         }
 
@@ -140,96 +140,64 @@ vector<vector<double>> DivideAndConquer(const vector<vector<double>> &matrixA, c
     return finalMatrix;
 }
 
-vector<vector<double> > DivideAndStrassen(vector<vector<double>>& matrixA, vector<vector<double>>& matrixB, int size) {
+void DivideAndStrassen(vector<vector<double>>& matrixA, vector<vector<double>>& matrixB, vector<vector<double>>& matrixC, int size) {
     using namespace matrix;
 
     //Dividing size by 2
     int index = (size / 2);
 
-    //Creating the final matrix which will contain the completed multiplication
-    vector<double> finalRows(size, 0);
-    vector<vector<double> > finalMatrix(size, finalRows);
-
     //Break statement to end recursion and begin back through stack
     if (size <= 2) {
-        NaiveMultiplication(matrixA, matrixB, finalMatrix, size);
+        NaiveMultiplication(matrixA, matrixB, matrixC, size);
     }
     else {
-
         //Filling submatrices
-        for (int state = 1; state < 8; state++) {
-            for (int i = 0; i < index; i++) {
-                for (int j = 0; j < index; j++) {
-                    A00[i][j] = matrixA[i][j];
-                    A01[i][j] = matrixA[i][j + index];
-                    A10[i][j] = matrixA[i + index][j];
-                    A11[i][j] = matrixA[i + index][i + index];
-
-                    B00[i][j] = matrixB[i][j];
-                    B01[i][j] = matrixB[i][j + index];
-                    B10[i][j] = matrixB[i + index][j];
-                    B11[i][j] = matrixB[i + index][i + index];
-
-                    switch (state) {
-                    case 1:
-                        AddMatrices(A00, A11, tempA, index);
-                        AddMatrices(B00, B11, tempB, index);
-                        M1 = DivideAndStrassen(tempA, tempB, index);
-                        break;
-                    case 2:
-                        AddMatrices(A10, A11, tempA, index);
-                        M2 = DivideAndStrassen(tempA, B00, index);
-                        break;
-                    case 3:
-                        SubMatrices(A10, A11, tempA, index);
-                        M3 = DivideAndStrassen(A00, tempA, index);
-                        break;
-                    case 4:
-                        SubMatrices(B10, B00, tempA, index);
-                        M4 = DivideAndStrassen(A11, tempA, index);
-                        break;
-                    case 5:
-                        AddMatrices(A00, A01, tempA, index);
-                        M5 = DivideAndStrassen(tempA, B11, index);
-                        break;
-                    case 6:
-                        SubMatrices(A10, A00, tempA, index);
-                        AddMatrices(B00, B01, tempB, index);
-                        M6 = DivideAndStrassen(tempA, tempB, index);
-                        break;
-                    case 7:
-                        SubMatrices(A01, A11, tempA, index);
-                        AddMatrices(B10, B11, tempB, index);
-                        M7 = DivideAndStrassen(tempA, tempB, index);
-                        break;
-                    }
-
-                }
-            }
-        }
-        //Returning values into finalMatrix
         for (int i = 0; i < index; i++) {
             for (int j = 0; j < index; j++) {
-                //C00 = M1 + M4 - M5 + M7
-                AddMatrices(M1, M4, tempA, index);
-                AddMatrices(M5, M7, tempB, index);
-                SubMatrices(tempA, tempB, tempA, index);
-                finalMatrix[i][j] = tempA[i][j];
-                //C01 = M3 + M5
-                AddMatrices(M3, M5, tempA, index);
-                finalMatrix[i][j + index] = tempA[i][j];
-                //C10 = M2 + M4
-                AddMatrices(M2, M4, tempA, index);
-                finalMatrix[i + index][j] = tempA[i][j];
-                //C11 = M1 + M2 + M3 + M6
-                SubMatrices(M1, M2, tempA, index);
-                AddMatrices(M3, M6, tempB, index);
-                AddMatrices(tempA, tempB, tempA, index);
-                finalMatrix[i + index][j + index] = tempA[i][j];
+
+                A00[i][j] = matrixA[i][j];
+                A01[i][j] = matrixA[i][j + index];
+                A10[i][j] = matrixA[i + index][j];
+                A11[i][j] = matrixA[i + index][j + index];
+
+                B00[i][j] = matrixB[i][j];
+                B01[i][j] = matrixB[i][j + index];
+                B10[i][j] = matrixB[i + index][j];
+                B11[i][j] = matrixB[i + index][j + index];
+            }
+        }
+
+        // Calculating M
+        SubMatrices(B01, B11, M1, index);
+        DivideAndStrassen(A00, M1, C00, index);
+
+        AddMatrices(A00, A01, M2, index);
+        DivideAndStrassen(M2, B00, C01, index);
+
+        AddMatrices(A10, A11, M3, index);
+        DivideAndStrassen(M3, B00, C10, index);
+
+        SubMatrices(B10, B00, M4, index);
+        DivideAndStrassen(A11, M4, C00, index);
+
+        AddMatrices(B00, B11, M5, index);
+        AddMatrices(A00, A11, M6, index);
+        DivideAndStrassen(M6, M5, C00, index);
+
+        SubMatrices(B01, B11, M7, index);
+        AddMatrices(A10, A11, M1, index);
+        DivideAndStrassen(M1, M7, C11, index);
+
+        //Returning values into matrixC
+        for (int i = 0; i < index; i++) {
+            for (int j = 0; j < index; j++) {
+                matrixC[i][j] = C00[i][j];
+                matrixC[i][j + index] = C01[i][j];
+                matrixC[i + index][j] = C10[i][j];
+                matrixC[i + index][j + index] = C11[i][j];
             }
         }
     }
-    return finalMatrix;
 }
 
 void printMatrix(vector<vector<double>> matrix, int size) {
@@ -243,40 +211,60 @@ void printMatrix(vector<vector<double>> matrix, int size) {
 
 int main()
 {
+    // Loop to iterate through the different matrix sizes
+    for (int i = 0; i <= 10; i++)
+    {
+        // Set the matrix size for testing
+        const int matrixSize = pow(2, i);  // You can change this to test different matrix sizes
 
+        // Generate random matrices
+        std::vector<std::vector<double>> matrixA(matrixSize, std::vector<double>(matrixSize, 1.0));
+        std::vector<std::vector<double>> matrixB(matrixSize, std::vector<double>(matrixSize, 2.0));
+        std::vector<std::vector<double>> resultMatrix(matrixSize, std::vector<double>(matrixSize, 0.0));
 
-    vector<vector<double>> matrixA = {
-        {2,1,1,1},
-        {1,1,1,1},
-        {1,1,1,1},
-        {1,1,1,1},
-    };
-    vector<vector<double>> matrixB = {
-        {1,1,1,1},
-        {1,1,1,1},
-        {1,1,1,1},
-        {1,1,1,1},
-    };
-    vector<vector<double>> matrixC = {
-        {0,0,0,0},
-        {0,0,0,0},
-        {0,0,0,0},
-        {0,0,0,0},
-    };
+        // Measure execution time for DivideAndConquer
+        auto start_time_dc = std::chrono::high_resolution_clock::now();
+        DivideAndStrassen(matrixA, matrixB, resultMatrix, matrixSize);
+        auto end_time_dc = std::chrono::high_resolution_clock::now();
+        auto duration_dc = std::chrono::duration_cast<std::chrono::microseconds>(end_time_dc - start_time_dc);
 
-    //Matrix(matrixA, matrixB, matrixC, size);
+        std::cout << duration_dc.count() << std::endl;
+    }
 
+    //Test vlock for Naive
+
+    // Test block for Divide and Conquer
     /*
-    //Naive Multiplication display
-    AddMatrices(matrixA, matrixB, matrixC, SIZE);
-    printMatrix(matrixC, SIZE);
+    // Generate random matrices
+    std::vector<std::vector<double>> matrixA(matrixSize, std::vector<double>(matrixSize, 1.0));
+    std::vector<std::vector<double>> matrixB(matrixSize, std::vector<double>(matrixSize, 2.0));
+    std::vector<std::vector<double>> resultMatrix(matrixSize, std::vector<double>(matrixSize, 0.0));
 
-    cout << endl;
+    // Measure execution time for DivideAndConquer
+    auto start_time_dc = std::chrono::high_resolution_clock::now();
+    DivideAndConquer(matrixA, matrixB, matrixSize);
+    auto end_time_dc = std::chrono::high_resolution_clock::now();
+    auto duration_dc = std::chrono::duration_cast<std::chrono::microseconds>(end_time_dc - start_time_dc);
+
+    std::cout << duration_dc.count() << std::endl;
     */
-    //Divide and conquer display
-    printMatrix(DivideAndConquer(matrixA, matrixB, SIZE), SIZE);
-    cout << endl;
-    //Divide and Strassen
-    printMatrix(DivideAndStrassen(matrixA, matrixB, SIZE), SIZE);
 
-}
+    // Test block for Strassen
+    /*
+    // Set the matrix size for testing
+    const int matrixSize = SIZE;  // You can change this to test different matrix sizes
+
+    // Generate random matrices
+    std::vector<std::vector<double>> matrixA(matrixSize, std::vector<double>(matrixSize, 1.0));
+    std::vector<std::vector<double>> matrixB(matrixSize, std::vector<double>(matrixSize, 2.0));
+    std::vector<std::vector<double>> resultMatrix(matrixSize, std::vector<double>(matrixSize, 0.0));
+
+    // Measure execution time for DivideAndStrassen
+    auto start_time_strassen = std::chrono::high_resolution_clock::now();
+    DivideAndStrassen(matrixA, matrixB, resultMatrix, matrixSize);
+    auto end_time_strassen = std::chrono::high_resolution_clock::now();
+    auto duration_strassen = std::chrono::duration_cast<std::chrono::microseconds>(end_time_strassen - start_time_strassen);
+
+    std::cout << duration_strassen.count() <<  std::endl;
+    */
+    }
