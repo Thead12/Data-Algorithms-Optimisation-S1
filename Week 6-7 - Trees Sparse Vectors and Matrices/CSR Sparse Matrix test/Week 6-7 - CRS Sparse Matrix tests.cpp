@@ -12,7 +12,7 @@
 int main()
 {
     using namespace CSR;
-    
+
     // Test constructor and getters
     std::vector<std::vector<double>> vectorA = { {4, 0, 0},{0, 0, 1},{0, 2, 0} };
     SparseMatrix<double> matrixA(vectorA);
@@ -91,4 +91,6 @@ int main()
     std::cout << "Result of Multiplication:" << std::endl;
     resultMultiplication.printDense();
     std::cout << std::endl;
+
+    std::cout << "All tests passed!" << std::endl;
 }
