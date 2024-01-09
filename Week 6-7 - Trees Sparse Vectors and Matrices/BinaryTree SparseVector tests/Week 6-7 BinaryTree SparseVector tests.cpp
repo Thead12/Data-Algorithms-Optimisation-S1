@@ -7,7 +7,7 @@
 #include<cassert>
 
 //============== Dependent headerfiles ==============
-#include "SparseVector.h"
+#include "BinaryTreeSparseVector.h"
 
 int main()
 {
