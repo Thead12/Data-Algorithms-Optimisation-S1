@@ -8,7 +8,7 @@
 //#define NDEBUG
 #include<cassert>
 
-#include<matrix.h>
+//#include<matrix.h>
 
 namespace LUdcmp
 {
