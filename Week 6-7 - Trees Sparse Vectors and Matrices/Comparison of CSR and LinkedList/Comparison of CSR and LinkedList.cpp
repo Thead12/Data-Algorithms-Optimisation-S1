@@ -3,7 +3,6 @@
 #include <cassert>
 #include <chrono>
 
-#include "matrix.h"
 #include "CSRSparseMatrix.h"
 #include "LinkedListSparseMatrix.h"
 
