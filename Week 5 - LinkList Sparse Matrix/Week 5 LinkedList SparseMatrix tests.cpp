@@ -8,39 +8,53 @@
 #include<cassert>
 
 #include "matrix.h"
-#include "LinkedListSparseMatrix.h"
+#include "LinkedListSparseMatrix.h"+
 
 int main()
 {
-    vector<vector<double>> denseVectorA = {
-        {0, 0, 0, 0},
-        {0, 1, 0, 0},
-        {0, 0, 2, 0},
-        {0, 0, 0, 3},
-        {0, 0, 0, 0}
-    };
+    LinkedList::SparseMatrix<double> sparseMat(3, 4);
+    assert(sparseMat.getNumRows() == 3);
+    assert(sparseMat.getNumCols() == 4);
 
-    vector<vector<double>> denseVectorB = {
-        {0, 2, 0, 0},
-        {0, 1, 3, 5},
-        {4, 9, 2, 1},
-        {5, 7, 6, 3},
-        {8, 6, 4, 0}
-    };
+    sparseMat.set(0, 0, 1.0);
+    sparseMat.set(1, 1, 2.0);
+    sparseMat.set(1, 0, 3.0);
 
-    Matrix denseA = Matrix(5, 4, denseVectorA);
-    Matrix denseB = Matrix(5, 4, denseVectorB);
+    assert(sparseMat(0, 0) == 1.0);
+    assert(sparseMat(1, 1) == 2.0);
+    assert(sparseMat(1, 0) == 3.0);
+    assert(sparseMat(0, 1) == 0.0);
 
 
-    SparseMatrix sparseA = SparseMatrix(5, 4, denseVectorA);
-    SparseMatrix sparseB = SparseMatrix(5, 4, denseVectorB);
+    LinkedList::SparseMatrix<double> sparseMat1(3, 3);
+    sparseMat1.set(0, 0, 1.0);
+    sparseMat1.set(1, 1, 2.0);
 
-    SparseMatrix sparseAdditionTest = sparseA.SubtractSparse(sparseB);
-    Matrix denseAdditionTest = sparseA.SubtractDense(denseB);
+    LinkedList::SparseMatrix<double> sparseMat2(3, 3);
+    sparseMat2.set(0, 0, 3.0);
+    sparseMat2.set(2, 2, 4.0);
 
-    sparseAdditionTest.PrintDense();
 
-    cout << endl;
+    LinkedList::SparseMatrix<double> result1 = sparseMat1.AddSparse(sparseMat2);
+    assert(result1(0, 0) == 4.0);
+    assert(result1(1, 1) == 2.0);
+    assert(result1(2, 2) == 4.0);
+    assert(result1(1, 0) == 0.0);
 
-    denseAdditionTest.Print();
+    LinkedList::SparseMatrix<double> result2 = sparseMat1.SubtractSparse(sparseMat2);
+    assert(result2(0, 0) == -2.0);
+    assert(result2(1, 1) == 2.0);
+    assert(result2(2, 2) == -4.0);
+    assert(result2(1, 0) == 0.0);
+
+    Dense::Matrix<double> denseMat(2, 2);
+    denseMat.set(0, 0, 1.0);
+    denseMat.set(1, 1, 2.0);
+
+    sparseMat = LinkedList::SparseMatrix<double>(denseMat);
+    assert(sparseMat(0, 0) == 1.0);
+    assert(sparseMat(1, 1) == 2.0);
+    assert(sparseMat(1, 0) == 0.0);
+
+    std::cout << "All tests passed!" << std::endl;
 }
